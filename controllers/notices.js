@@ -14,7 +14,7 @@ const getAll = async (req, res) => {
     const data = await Notice.find({ category, ...filter }, "", {
       skip,
       limit: +limit,
-    }).populate("owner", "email");
+    }).sort({ updatedAt: -1}).populate("owner", "email");
 
     return res.json({
       total: dataCount,
@@ -36,7 +36,7 @@ const getAll = async (req, res) => {
         skip,
         limit: +limit,
       }
-    ).populate("owner", "email");
+    ).sort({ updatedAt: -1}).populate("owner", "email");
 
     return res.json({
       total: dataCount,
@@ -81,7 +81,7 @@ const updateFavorite = async (req, res) => {
     {
       new: true,
     }
-  );
+  ).sort({ updatedAt: -1});
   if (!result) {
     throw HttpError(404, "Not Found");
   }
@@ -102,7 +102,7 @@ const getFavorites = async (req, res) => {
     const data = await Notice.find({ _id: favoriteNotices }, "", {
       skip,
       limit: +limit,
-    }).populate("owner", "email");
+    }).sort({ updatedAt: -1}).populate("owner", "email");
 
     res.json({
       total: dataCount,
@@ -115,7 +115,7 @@ const getFavorites = async (req, res) => {
     const data = await Notice.find({ _id: favoriteNotices }, "", {
       skip,
       limit: +limit,
-    }).populate("owner", "email");
+    }).sort({ updatedAt: -1}).populate("owner", "email");
 
     const result = data.filter((notice) =>
       notice.title.toLowerCase().includes(qwery.toLowerCase())
@@ -161,7 +161,7 @@ const getOwner = async (req, res) => {
   const skip = (page - 1) * limit;
   if (qwery === "") {
     const dataCount = await Notice.count({ owner });
-    const data = await Notice.find({ owner }, "", { skip, limit }).populate(
+    const data = await Notice.find({ owner }, "", { skip, limit }).sort({ updatedAt: -1}).populate(
       "owner",
       "name email"
     );
@@ -181,7 +181,7 @@ const getOwner = async (req, res) => {
       { owner, title: { $regex: qwery, $options: "i" } },
       "",
       { skip, limit }
-    ).populate("owner", "name email");
+    ).sort({ updatedAt: -1}).populate("owner", "name email");
     return res.json({
       total: dataCount,
       page: +page,
