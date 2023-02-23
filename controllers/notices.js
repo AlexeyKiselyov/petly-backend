@@ -10,8 +10,8 @@ const getAll = async (req, res) => {
   const { page = 1, limit = 8, qwery = "", ...filter } = req.query;
   const skip = (page - 1) * limit;
   if (qwery === "") {
-    const dataCount = await Notice.count({ category,...filter });
-    const data = await Notice.find({ category,...filter }, "", {
+    const dataCount = await Notice.count({ category, ...filter });
+    const data = await Notice.find({ category, ...filter }, "", {
       skip,
       limit: +limit,
     }).populate("owner", "email");
@@ -25,11 +25,12 @@ const getAll = async (req, res) => {
     });
   } else {
     const dataCount = await Notice.count({
-      title: { $regex: qwery, $options: "i" },category,
+      title: { $regex: qwery, $options: "i" },
+      category,
       ...filter,
     });
     const data = await Notice.find(
-      { title: { $regex: qwery, $options: "i" }, category,...filter },
+      { title: { $regex: qwery, $options: "i" }, category, ...filter },
       "",
       {
         skip,
@@ -103,35 +104,29 @@ const getFavorites = async (req, res) => {
       limit: +limit,
     }).populate("owner", "email");
 
-    if (data.length) {
-      return res.json({
-        total: dataCount,
-        page: +page,
-        limit: +limit,
-        totalPages: Math.ceil(dataCount / limit),
-        notices: data,
-      });
-    }
-    res.status(204).json({ message: "No Content" });
+    res.json({
+      total: dataCount,
+      page: +page,
+      limit: +limit,
+      totalPages: Math.ceil(dataCount / limit),
+      notices: data,
+    });
   } else {
     const data = await Notice.find({ _id: favoriteNotices }, "", {
       skip,
       limit: +limit,
     }).populate("owner", "email");
 
-    if (data.length) {
-      const result = data.filter((notice) =>
-        notice.title.toLowerCase().includes(qwery.toLowerCase())
-      );
-      return res.json({
-        total: result.length,
-        page: +page,
-        limit: +limit,
-        totalPages: Math.ceil(result.length / limit),
-        notices: result,
-      });
-    }
-    res.status(204).json({ message: "No Content" });
+    const result = data.filter((notice) =>
+      notice.title.toLowerCase().includes(qwery.toLowerCase())
+    );
+    res.json({
+      total: result.length,
+      page: +page,
+      limit: +limit,
+      totalPages: Math.ceil(result.length / limit),
+      notices: result,
+    });
   }
 };
 
