@@ -5,7 +5,7 @@ const { User } = require("../models/user");
 const { Pet } = require("../models/pets");
 const { HttpError, ctrlWrapper } = require("../helpers");
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY,FRONTEND_URL } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -90,8 +90,21 @@ const logout = async (req, res) => {
   });
 };
 
-module.exports = {
+const googleAuth = async (req, res) => {
+  const { _id: id } = req.user;
+  const payload = {
+    id,
+  };
+
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "230h" });
+  await User.findByIdAndUpdate(id, { token });
+
+  res.redirect(`${FRONTEND_URL}?token=${token}`)
+};
+
+module.exports = { 
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
+  googleAuth: ctrlWrapper(googleAuth),
 };

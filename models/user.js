@@ -3,6 +3,8 @@ const Joi = require("joi");
 const { handleMongooseError } = require("../helpers");
 
 const nameRegexp = /^[a-zA-Z]{2,20}$/;
+// const nameRegexp = /^[a-zA-Zа-яА-Я]{2,20}$/;
+// const nameRegexp = /^[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9-_.\s]{,20}$/;
 const emailRegexp =
   /^[^-._]{1}[A-Za-z0-9._-]{1,}@[^-._]{1}[A-Za-z0-9.-]{0,}\.[A-Za-z]{2,4}$/;
 const phoneRegexp = /^\+380\d{9}$/;
@@ -18,7 +20,7 @@ const userSchema = new Schema(
     name: {
       type: String,
       required: [true, "Name is required"],
-      match: nameRegexp,
+      // match: nameRegexp,
     },
     email: {
       type: String,
@@ -33,17 +35,20 @@ const userSchema = new Schema(
     },
     city: {
       type: String,
-      required: [true, "City is required"],
-      match: cityRegexp,
+      // required: [true, "City is required"],
+      // match: cityRegexp,
+      default: "no info",
     },
     phone: {
       type: String,
-      required: [true, "Mobile phone is required"],
-      match: phoneRegexp,
+      // required: [true, "Mobile phone is required"],
+      // match: phoneRegexp,
+      default: "no info",
     },
     avatarURL: {
       type: String,
-      required: true,
+      // required: true,
+      default: "https://res.cloudinary.com/digml0rat/image/upload/v1677787043/Fullstack%20Group%20Project/Avatar_default_Petly_eorhao.png",
     },
     birthday: {
       type: String,
