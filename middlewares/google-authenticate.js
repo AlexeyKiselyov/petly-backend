@@ -6,12 +6,12 @@ const gravatar = require("gravatar");
 
 const { User } = require("../models/user");
 
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BASE_URL } = process.env;
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, FRONTEND_URL } = process.env;
 
 const googleParams = {
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: `${BASE_URL}/api/v1/auth/google/callback`,
+  callbackURL: `${FRONTEND_URL}/api/v1/auth/google/callback`,
   passReqToCallback: true,
 };
 
