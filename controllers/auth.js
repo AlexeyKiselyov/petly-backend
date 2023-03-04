@@ -1,11 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const gravatar = require("gravatar");
 const { User } = require("../models/user");
 const { Pet } = require("../models/pets");
 const { HttpError, ctrlWrapper } = require("../helpers");
 
-const { SECRET_KEY,FRONTEND_URL } = process.env;
+const { SECRET_KEY, FRONTEND_URL } = process.env;
+
+const { constants } = require("../helpers");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -15,12 +16,11 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email);
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
+    avatarURL:constants.DEFAULT_AVATAR_URL,
   });
 
   res.status(201).json({
@@ -99,10 +99,10 @@ const googleAuth = async (req, res) => {
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "230h" });
   await User.findByIdAndUpdate(id, { token });
 
-  res.redirect(`${FRONTEND_URL}?token=${token}`)
+  res.redirect(`${FRONTEND_URL}?token=${token}`);
 };
 
-module.exports = { 
+module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),

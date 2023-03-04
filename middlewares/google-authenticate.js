@@ -8,6 +8,8 @@ const { User } = require("../models/user");
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BASE_URL } = process.env;
 
+const { constants } = require("../helpers");
+
 const googleParams = {
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
@@ -23,12 +25,11 @@ const googleCalback = async (req, accessToken, refreshToken, profile, done) => {
       return done(null, user);
     }
     const password = await bcrypt.hash(nanoid(), 10);
-    const avatarURL = gravatar.url(email);
     const newUser = await User.create({
       email,
       password,
       name: displayName.slice(0, 19),
-      avatarURL,
+      avatarURL: constants.DEFAULT_AVATAR_URL,
     });
     done(null, newUser);
   } catch (error) {
